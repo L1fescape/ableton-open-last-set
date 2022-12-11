@@ -8,6 +8,10 @@ Parses Ableton's `Preferences.cfg` file to get the list of most recent sets (the
 ## Dependencies
 - python
 
+## Demo
+
+![ableton open recent demo](demo.gif)
+
 ## Setup
 
 OSX:
