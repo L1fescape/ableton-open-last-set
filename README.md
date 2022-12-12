@@ -26,5 +26,5 @@ OSX:
 - have applescript wait until project is loaded before giving application focus (currently focuses right when ableton loads)
 
 ## Notes
-- the main motivation was to remove an additional step when trying to hop back into a project to reduce the number of distractions between the idea in your head and creating it. Saving time was not an objective (and it doesn't save much time - see the next note).
-- When calling `open my_set.als` Ableton will *still* open to a blank Untitled.als project first and then open the project. Need to investigate if this is avoidable.
+- The main motivation was to remove an additional step when trying to hop back into a project in order to reduce the number of distractions between the idea in your head and creating it. Saving time was not an objective (and it doesn't save much time - see the next note)
+- When calling `open my_set.als` Ableton will *still* open to a blank Untitled.als project first and then open the project. Need to investigate if this is avoidable
