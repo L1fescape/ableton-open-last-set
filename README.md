@@ -1,6 +1,6 @@
-# Launch Ableton with your most recent set loaded
+# Autoload the most recent Ableton set
 
-Parses Ableton's `Preferences.cfg` file to get the list of most recent sets (the same list you see in the `File -> Open Recent Set` dropdown). Then calls `open` on that file.
+Creates a way to launch Ableton with your most recent set automatically loaded. This is done by parsing Ableton's `Preferences.cfg` file to get the list of most recent sets (the same list you see in the `File -> Open Recent Set` dropdown). Then calls `open` on that file.
 
 **Disclaimer**: This is functional but still very much a work in progress
 
@@ -26,5 +26,5 @@ OSX:
 - have applescript wait until project is loaded before giving application focus (currently focuses right when ableton loads)
 
 ## Notes
-- the main motivation was to remove an additional step when trying to hop back into a project with a fresh idea on my mind. I get distracted very easily, so the fewer steps there are between me and making music the more music will be made. Saving time was not an objective (and it doesn't save much time - see the next note).
-- When calling `open my_set.als` Ableton will *still* open to a blank Untitled.als project before then opening your set
+- the main motivation was to remove an additional step when trying to hop back into a project to reduce the number of distractions between the idea in your head and creating it. Saving time was not an objective (and it doesn't save much time - see the next note).
+- When calling `open my_set.als` Ableton will *still* open to a blank Untitled.als project first and then open the project. Need to investigate if this is avoidable.
