@@ -1,6 +1,6 @@
-# Autoload the most recent Ableton set
+# Ableton Load Recent Set
 
-Creates a way to launch Ableton with your most recent set automatically loaded. This is done by parsing Ableton's `Preferences.cfg` file to get the list of most recent sets (the same list you see in the `File -> Open Recent Set` dropdown). Then calls `open` on that file.
+Creates a way to launch Ableton with your most recent set automatically loaded. This is done by parsing Ableton's `Preferences.cfg` file to get the list of most recent sets (the same list you see in the `File -> Open Recent Set` dropdown) and then opening that file.
 
 **Disclaimer**: This is functional but still very much a work in progress
 
@@ -14,9 +14,9 @@ Creates a way to launch Ableton with your most recent set automatically loaded. 
 ## Setup
 
 OSX:
-- Copy `get_recent_set.py` somewhere on your computer
+- Clone this repo or copy `get_recent_set.py` somewhere on your computer
 - Launch the `Script Editor` app and create a new script with the contents inside of `osx/Ableton Recent.app`, replace `/path/to/get_recent_set.py` with the location you used for the previous step, hit save and set the `File Format` dropdown to `Application`
-- Launch your spiffy new app and load directely into whatever you were last working on!
+- Launch your spiffy new app and load directly into whatever you were last working on!
 
 ## TODOs
 - support windows
