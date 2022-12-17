@@ -1,5 +1,6 @@
 import re
 import os
+import logging
 from sys import platform
 import getpass
 import string
@@ -14,10 +15,12 @@ def get_ableton_preferences_filepath():
     if platform == 'win32':
         root_pref_folder = 'C:\\Users\\{user}\\AppData\\Roaming\\Ableton\\'.format(user=user)
     if not os.path.isdir(root_pref_folder):
+        logging.exception('Root directory "{folder}" does not exist'.format(folder=root_pref_folder))
         return
 
     live_folders = [name for name in os.listdir(root_pref_folder) if os.path.isdir(os.path.join(root_pref_folder, name)) and 'Live ' in name]
     if not live_folders:
+        logging.exception('There are no Ableton Live preferences folders in "{folder}" '.format(folder=root_pref_folder))
         return
     live_version = max(live_folders, key=parse_live_version) # pick the most recent version
 
@@ -33,6 +36,9 @@ def get_ableton_preferences_filepath():
 
 prefs_filepath = get_ableton_preferences_filepath()
 if not prefs_filepath:
+    exit()
+if not os.path.exists(prefs_filepath):
+    logging.exception('Attempted to use preferences file "{filepath}" but it does not exist'.format(fillepath=prefs_filepath))
     exit()
 
 recent_set = None
@@ -57,5 +63,8 @@ for chunk in filtered_prefs_content.split('FileRef'):
         recent_set = chunk[chunk.find('/'):] # remove random chars infront of each path
         break
 
-if recent_set:
-    print(recent_set)
+if not recent_set:
+    logging.exception('Preferences file could not be found')
+    exit()
+
+print(recent_set)
