@@ -1,11 +1,26 @@
+import re
+import os
+from sys import platform
 import getpass
 import string
 
-user = getpass.getuser()
-live_version = '11.2.6'
-osx_pref_filepath = '/Users/{user}/Library/Preferences/Ableton/Live {live_version}/Preferences.cfg'
-windows_pref_filepath = 'C:\Users\{user}\AppData\Roaming\Ableton\Live {live_version}\Preferences\Preferences.cfg'
-pref_filepath = osx_pref_filepath.format(user=user, live_version=live_version)
+def parse_live_version(version):
+    major, minor, patch = re.search("Live (\d*)\.*(\d*)\.*(\d*)", version).groups()
+    return int(major or 0), int(minor or 0), int(patch or 0)
+
+def get_preferences_folder():
+    user = getpass.getuser()
+    ableton_pref_folder = '/Users/{user}/Library/Preferences/Ableton/'.format(user=user)
+    if platform == 'win32':
+        ableton_pref_folder = 'C:\\Users\\{user}\\AppData\\Roaming\\Ableton\\'.format(user=user)
+    live_versions = [name for name in os.listdir(ableton_pref_folder) if os.path.isdir(os.path.join(ableton_pref_folder, name))]
+    latest_live_version = max(live_versions, key=parse_live_version)
+    ableton_pref_filename = '/Preferences.cfg'
+    if platform == 'win32':
+        ableton_pref_filename = '\\Preferences\\Preferences.cfg'
+    return '{pref_folder_root}{live_version}{pref_filename}'.format(pref_folder_root=ableton_pref_folder, live_version=latest_live_version, pref_filename=ableton_pref_filename)
+
+pref_filepath = get_preferences_folder()
 recent_set = None
 
 # Preferences.cfg is a binary file and this is the horrible way it's being parsed at the moment.
@@ -25,7 +40,7 @@ for c in prefs_content:
 # split on 'FileRef' and then look for the first item containing '.als'
 for chunk in filtered_prefs_content.split('FileRef'):
     if chunk.find('.als') > -1:
-        recent_set = chunk[1:] # there's always one random character infront of each FileRef
+        recent_set = chunk[chunk.find('/'):] # remove random chars infront of each path
         break
 
 if recent_set:
