@@ -8,25 +8,39 @@ def parse_live_version(version):
     major, minor, patch = re.search("Live (\d*)\.*(\d*)\.*(\d*)", version).groups()
     return int(major or 0), int(minor or 0), int(patch or 0)
 
-def get_preferences_folder():
+def get_ableton_preferences_filepath():
     user = getpass.getuser()
-    ableton_pref_folder = '/Users/{user}/Library/Preferences/Ableton/'.format(user=user)
+    root_pref_folder = '/Users/{user}/Library/Preferences/Ableton/'.format(user=user)
     if platform == 'win32':
-        ableton_pref_folder = 'C:\\Users\\{user}\\AppData\\Roaming\\Ableton\\'.format(user=user)
-    live_versions = [name for name in os.listdir(ableton_pref_folder) if os.path.isdir(os.path.join(ableton_pref_folder, name))]
-    latest_live_version = max(live_versions, key=parse_live_version)
-    ableton_pref_filename = '/Preferences.cfg'
-    if platform == 'win32':
-        ableton_pref_filename = '\\Preferences\\Preferences.cfg'
-    return '{pref_folder_root}{live_version}{pref_filename}'.format(pref_folder_root=ableton_pref_folder, live_version=latest_live_version, pref_filename=ableton_pref_filename)
+        root_pref_folder = 'C:\\Users\\{user}\\AppData\\Roaming\\Ableton\\'.format(user=user)
+    if not os.path.isdir(root_pref_folder):
+        return
 
-pref_filepath = get_preferences_folder()
+    live_folders = [name for name in os.listdir(root_pref_folder) if os.path.isdir(os.path.join(root_pref_folder, name)) and 'Live ' in name]
+    if not live_folders:
+        return
+    live_version = max(live_folders, key=parse_live_version) # pick the most recent version
+
+    pref_filename = '/Preferences.cfg'
+    if platform == 'win32':
+        pref_filename = '\\Preferences\\Preferences.cfg'
+
+    return '{root_pref_folder}{live_version}{pref_filename}'.format(
+        root_pref_folder=root_pref_folder,
+        live_version=live_version,
+        pref_filename=pref_filename
+    )
+
+prefs_filepath = get_ableton_preferences_filepath()
+if not prefs_filepath:
+    exit()
+
 recent_set = None
 
 # Preferences.cfg is a binary file and this is the horrible way it's being parsed at the moment.
 # It looks like this file has some sort of xml structure. It would be great to be able to parse
 # that and reference keys to get the most recent file instead of the method below
-with open(pref_filepath, mode='rb') as file:
+with open(prefs_filepath, mode='rb') as file:
     prefs_content = file.read().decode('latin1')
 
 # attempt to filter out a lot of the garbage we get back after reading the file in as binary.
