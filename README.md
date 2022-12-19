@@ -20,9 +20,7 @@ OSX:
 
 ## TODOs
 - support windows
-- select latest live version in `/Users/[username]/Library/Preferences/Ableton` folder instead of hardcoding
 - remove python dependency
-- handle case where getting the most recent set errors or returns null 
 - have applescript wait until project is loaded before giving application focus (currently focuses right when ableton loads)
 
 ## Notes
