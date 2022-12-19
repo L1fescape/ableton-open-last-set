@@ -38,7 +38,7 @@ prefs_filepath = get_ableton_preferences_filepath()
 if not prefs_filepath:
     exit()
 if not os.path.exists(prefs_filepath):
-    logging.exception('Attempted to use preferences file "{filepath}" but it does not exist'.format(fillepath=prefs_filepath))
+    logging.exception('Attempted to use preferences file "{filepath}" but it does not exist'.format(filepath=prefs_filepath))
     exit()
 
 recent_set = None
