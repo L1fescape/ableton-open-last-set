@@ -6,6 +6,8 @@ import getpass
 import string
 # from sys import platform
 
+logging.basicConfig(format='%(message)s')
+
 live_folder_prefix = 'Live '
 live_folder_regex = "{prefix}(\d*)\.*(\d*)\.*(\d*)".format(
     prefix=live_folder_prefix)
@@ -20,16 +22,15 @@ def get_live_version_folder(root_pref_folder, live_version=''):
     live_folders = [name for name in os.listdir(root_pref_folder) if os.path.isdir(
         os.path.join(root_pref_folder, name)) and live_folder_prefix in name]
     if not live_folders:
-        logging.exception('There are no Ableton Live preferences folders in "{folder}"\
+        logging.error('There are no Ableton Live preferences folders in "{folder}"\
              that match format "{format}"'.format(folder=root_pref_folder, format=live_folder_regex))
         return
     # if a live version was specified via command args look for it's corresponding folder
     if live_version:
-        live_folder = '{prefix}{version}'.format(
-            prefix=live_folder_prefix, version=live_version)
+        live_folder = ''.join([live_folder_prefix, live_version])
         if live_folder not in live_folders:
-            logging.exception('Ableton Live preferences folder for version "{version}" was not found'.format(
-                version=live_version))
+            logging.error('Preferences folder for Live version "{version}" was not found in "{dir}"'.format(
+                version=live_version, dir=root_pref_folder))
             return
         return live_folders[live_folders.index(live_folder)]
     # otherwise use the latest version
@@ -38,12 +39,12 @@ def get_live_version_folder(root_pref_folder, live_version=''):
 
 def get_live_preferences_filepath(live_version=''):
     user = getpass.getuser()
-    root_pref_folder = '/Users/{user}/Library/Preferences/Ableton`'.format(
+    root_pref_folder = '/Users/{user}/Library/Preferences/Ableton'.format(
         user=user)
     # if platform == 'win32':
     #     root_pref_folder = 'C:\\Users\\{user}\\AppData\\Roaming\\Ableton\\'.format(user=user)
     if not os.path.isdir(root_pref_folder):
-        logging.exception('Root directory "{folder}" does not exist'.format(
+        logging.error('Root directory "{folder}" does not exist'.format(
             folder=root_pref_folder))
         return
     live_folder = get_live_version_folder(root_pref_folder, live_version)
@@ -61,7 +62,7 @@ def get_recent_set(live_version=''):
     if not prefs_filepath:
         return
     if not os.path.exists(prefs_filepath):
-        logging.exception('Attempted to use preferences file "{filepath}" but the file does not exist'.format(
+        logging.error('Attempted to use preferences file "{filepath}" but the file does not exist'.format(
             filepath=prefs_filepath))
         return
     # Preferences.cfg is a binary file and this is the horrible way it's being parsed at the moment.
@@ -83,7 +84,7 @@ def get_recent_set(live_version=''):
             recent_set = chunk[chunk.find('/'):]
             break
     if not recent_set:
-        logging.exception('Recent set could not be found in preferences file "{filepath}"'.format(
+        logging.error('Recent set could not be found in preferences file "{filepath}"'.format(
             filepath=prefs_filepath))
         return
     return recent_set
