@@ -80,13 +80,15 @@ def get_recent_set(live_version=''):
     # split on 'FileRef' and then look for the first item containing '.als'
     for chunk in filtered_prefs_content.split('FileRef'):
         if chunk.find('.als') > -1:
-            # remove random chars infront of each path
-            recent_set = chunk[chunk.find('/'):]
+            recent_set = chunk
             break
     if not recent_set:
         logging.error('Recent set could not be found in preferences file "{filepath}"'.format(
             filepath=prefs_filepath))
         return
+    # remove random chars that are added before each fileref val
+    while not os.path.isfile(recent_set):
+        recent_set = recent_set[recent_set.find('/'):]
     return recent_set
 
 
